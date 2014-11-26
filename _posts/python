@@ -1,0 +1,53 @@
+
+用python实现哈希表
+
+哈哈，这是我第一篇博客园的博客。尝试了一下用python实现的哈希表，首先处理冲突的方法是开放地址法，冲突表达式为Hi=（H（key）+1）mod m，m为表长。
+复制代码
+
+ 1 #! /usr/bin/env python
+ 2 #coding=utf-8
+ 3 #实现哈希表（线性地址再散列）
+ 4 
+ 5 def ChangeKey(key, m, di):
+ 6     key01 = (key+di) % m
+ 7     return key01
+ 8 
+ 9 a = raw_input("Please entry the numbers:\n").split()
+10 m = len(a)
+11 dict01 = {}
+12 for i in a:
+13     key = int(i) % m
+14     if "%s" % key in dict01:
+15         NewKey = ChangeKey(key, m, 1)
+16         while "%s" % NewKey in dict01:         #因为下面的dict01的key值是以字符串来保存，因此这里作判断时也要用字符串格式
+17             NewKey = ChangeKey(NewKey, m, 1)
+18         dict01["%s" % NewKey] = int(i)
+19     else:
+20         dict01["%s" % key] = int(i)
+21 print dict01
+
+复制代码
+
+ 
+
+接下来是用开放地址法。
+
+目标，输入：key/value列表，输出：运用拉链法的哈希表
+
+对于下面的这个函数，输入的是一个这样的列表数据结构：["key01 val01", "key02 val01", "key03 val01", "key01 val02", "key02 val02", "key01 val03", ...]
+
+而函数返回一个这样的字典数据结构：{key01：[val01, val02, val03, ...],key02:[val01, val02...], key03:[val01, ...]}。这个函数和MapReduce思想中的Reduce功能是类似的。
+
+代码如下：
+复制代码
+
+def chainHash(InputList)：
+    res = {}
+    for line in InputList:
+        if line.split()[0] not in res:
+            temp = []        #因为在拉链法中，键值包含多个对象，因此需要新建一个列表，把键值保存在这个列表中
+            temp.append(line.split()[1])
+            res["%s" % line.split()[0]] = temp
+        else:
+            res["%s" % line.split()[0]].append(line.split()[1])
+    return res
